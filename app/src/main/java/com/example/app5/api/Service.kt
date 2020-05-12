@@ -7,6 +7,6 @@ import retrofit2.http.*
 
 interface Service {
 
-    @GET("/search/users?q=language:java+location:lagos")
+    @GET("/search/users?q=location:Fullerton")
     fun getItems(): Call<ItemResponse>
 }
