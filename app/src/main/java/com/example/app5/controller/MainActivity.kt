@@ -1,31 +1,33 @@
 package com.example.app5.controller
 
-//import android.R
-import android.app.ProgressDialog
+
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.app5.ItemAdapter
 import com.example.app5.R
 import com.example.app5.api.Client
 import com.example.app5.api.Service
 import com.example.app5.model.Item
 import com.example.app5.model.ItemResponse
-import retrofit2.Call
-import retrofit2.Callback
+import kotlinx.android.synthetic.main.activity_main.view.*
+import retrofit2.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private var recyclerview: RecyclerView? = null
-    private var noConnection: TextView? = null
-    private val item: Item? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var noConnection: TextView
+    private lateinit var item: Item
     //var pd: ProgressDialog? = null
-    private var swipeContainer: SwipeRefreshLayout? = null
+    private lateinit var swipeContainer: SwipeRefreshLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +38,10 @@ class MainActivity : AppCompatActivity() {
         swipeContainer = findViewById(R.id.swipeContainer)
 
         //swipeContainer.setColorSchemeResources(R.color.holo_orange_dark)
-        swipeContainer.setOnRefreshListener(OnRefreshListener {
+        swipeContainer.setOnRefreshListener {
             loadJSON()
-            Toast.makeText(this@MainActivity, "Github Users Refreshed", Toast.LENGTH_SHORT)
-                .show()
-        })
+            Toast.makeText(this@MainActivity, "Github Users Refreshed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initViews() {
@@ -48,24 +49,40 @@ class MainActivity : AppCompatActivity() {
         //pd.setMessage("Fetching Github Users...")
         //pd.setCancelable(false)
         //pd.show()
-        recyclerview = findViewById(R.id.userView)
-        recyclerview.setLayoutManager(LinearLayoutManager(applicationContext))
-        recyclerview.smoothScrollToPosition(0)
+        recyclerView = findViewById(R.id.userView)
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        recyclerView.smoothScrollToPosition(0)
         loadJSON()
     }
 
     private fun loadJSON() {
         noConnection = findViewById(R.id.noConnection)
         try {
-            val client = Client()
-            val apiService: Service = client.getClient().create(Service::class.java)
-            val call: Call<ItemResponse?>? = apiService.getItems()
-            //here
-            call.enqueue(Callback<ItemResponse>(){
+            val Client = Client()
+            val apiService = Client.getClient()!!.create(Service::class.java)
+            val call: Call<ItemResponse> = apiService.getItems()
+            call.enqueue(object : Callback<ItemResponse?> {
+                override fun onResponse(
+                    call: Call<ItemResponse?>?,
+                    response: Response<ItemResponse?>
+                ) {
+                    val items: List<Item> = response.body()?.getItems()!!
+                    recyclerView.adapter = ItemAdapter(applicationContext, items)
+                    recyclerView.smoothScrollToPosition(0)
+                    swipeContainer.isRefreshing = false
+                    //pd.hide()
+                }
 
+                override fun onFailure(call: Call<ItemResponse?>?, t: Throwable) {
+                    //Log.d("Error", t.message)
+                    Toast.makeText(this@MainActivity, "Error Fetching Data!", Toast.LENGTH_SHORT)
+                        .show()
+                    noConnection.visibility = View.VISIBLE
+                    //pd.hide()
+                }
             })
-        } catch (e: Exception) {
-            Log.d("Error", e.message)
+        } catch (e: java.lang.Exception) {
+            //Log.d("Error", e.message)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
         }
     }

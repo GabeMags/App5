@@ -4,50 +4,47 @@ import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
 
-
-
-
 class Item {
 
     @SerializedName("login")
     @Expose
-    private var login: String? = null
+    private lateinit var login: String
 
-    @SerializedName("avatar")
+    @SerializedName("avatar_url")
     @Expose
-    private var avatarUrl: String? = null
+    private lateinit var avatarUrl: String
 
     @SerializedName("html_url")
     @Expose
-    private var htmlUrl: String? = null
+    private lateinit var htmlUrl: String
 
-    fun Item(login: String?, avatarUrl: String?, htmlUrl: String?) {
+    fun Item(login: String, avatarUrl: String, htmlUrl: String) {
         this.login = login
         this.avatarUrl = avatarUrl
         this.htmlUrl = htmlUrl
     }
 
-    fun getLogin(): String? {
+    fun getLogin(): String {
         return login
     }
 
-    fun setLogin(login: String?) {
+    fun setLogin(login: String) {
         this.login = login
     }
 
-    fun getAvatarUrl(): String? {
+    fun getAvatarUrl(): String {
         return avatarUrl
     }
 
-    fun setAvatarUrl(avatarUrl: String?) {
+    fun setAvatarUrl(avatarUrl: String) {
         this.avatarUrl = avatarUrl
     }
 
-    fun getHtmlUrl(): String? {
+    fun getHtmlUrl(): String {
         return htmlUrl
     }
 
-    fun setHtmlUrl(htmlUrl: String?) {
+    fun setHtmlUrl(htmlUrl: String) {
         this.htmlUrl = htmlUrl
     }
 }
