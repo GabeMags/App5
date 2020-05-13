@@ -18,10 +18,15 @@ class Item {
     @Expose
     private lateinit var htmlUrl: String
 
-    fun Item(login: String, avatarUrl: String, htmlUrl: String) {
+    //@SerializedName("followers_url")
+    //@Expose
+    //private lateinit var followersUrl: String
+
+    fun Item(login: String, avatarUrl: String, htmlUrl: String/*, followersUrl: String*/) {
         this.login = login
         this.avatarUrl = avatarUrl
         this.htmlUrl = htmlUrl
+        //this.followersUrl = followersUrl
     }
 
     fun getLogin(): String {
@@ -47,4 +52,9 @@ class Item {
     fun setHtmlUrl(htmlUrl: String) {
         this.htmlUrl = htmlUrl
     }
+
+    //fun getFollowers(login: String): Int{
+
+    //    return
+    //}
 }

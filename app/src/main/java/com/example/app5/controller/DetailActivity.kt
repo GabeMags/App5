@@ -41,7 +41,7 @@ class DetailActivity : AppCompatActivity() {
         Username!!.text = username
         Glide.with(this)
             .load(avatarUrl)
-            .placeholder(R.drawable.load)
+            .placeholder(R.drawable.app_icon)
             .into(imageView!!)
         supportActionBar!!.title = "Details Activity"
     }

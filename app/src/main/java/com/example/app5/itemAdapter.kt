@@ -9,10 +9,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.app5.api.Service
 import com.example.app5.controller.DetailActivity
+import com.example.app5.model.FollowersResponse
+import com.example.app5.api.Client
+import com.example.app5.model.Followers
+
 
 import com.example.app5.model.Item
+import com.example.app5.model.ItemResponse
 import com.squareup.picasso.Picasso
+import org.json.JSONArray
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.properties.Delegates
 
 
 class ItemAdapter(
@@ -27,14 +39,47 @@ class ItemAdapter(
         return ViewHolder(view)
     }
 
+
+
+    private fun getFollowers(login: String): String{
+        var size: Int = 0
+        val Client = Client()
+        val apiService2 = Client.getClient()!!.create(Service::class.java)
+        val followers: Call<List<Item>> = apiService2.getFollowers(login)
+        followers.enqueue(object : Callback<List<Item>?> {
+            override fun onResponse(
+                followers: Call<List<Item>?>?,
+                response: Response<List<Item>?>
+            ) {
+                //val items: List<Item> = response.body()?.getItems()!!
+                val followersJSON: Int? = response.body()?.size
+                if(followersJSON != null) {
+                    size += followersJSON
+                }
+            }
+
+            override fun onFailure(followers: Call<List<Item>?>?, t: Throwable) {
+
+                Toast.makeText(context, "Error Fetching Data!", Toast.LENGTH_SHORT)
+                    .show()
+                //noConnection.visibility = View.VISIBLE
+            }
+        })
+        return size.toString()
+    }
+
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.title.text = items[i].getLogin()
         viewHolder.githublink1.text = items[i].getHtmlUrl()
+        viewHolder.followersNumber.text = getFollowers(items[i].getLogin())
         Picasso.get()
             .load(items[i].getAvatarUrl())
-            .placeholder(R.drawable.load) //TODO: replace the gif drawable
+            .placeholder(R.drawable.app_icon)
             .into(viewHolder.imageView)
     }
+
+
+
 
     override fun getItemCount(): Int {
         return items.size
@@ -44,6 +89,7 @@ class ItemAdapter(
         val title: TextView = view.findViewById(R.id.title)
         val githublink1: TextView = view.findViewById(R.id.githubLink1)
         val imageView: ImageView = view.findViewById(R.id.profilePicture) as ImageView
+        val followersNumber: TextView = view.findViewById(R.id.followersNumber)
 
         init {
 
