@@ -20,7 +20,6 @@ import com.example.app5.model.Item
 import com.example.app5.model.ItemResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
-import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     response: Response<ItemResponse?>
                 ) {
                     val items: List<Item> = response.body()?.getItems()!!
-                    items[0].getLogin()
+                    //val login: Item = items[0]
                     //val followers: Int = loadFollowersJSON(items)
                     recyclerView.adapter = ItemAdapter(applicationContext, items)
                     recyclerView.smoothScrollToPosition(0)

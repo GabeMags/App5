@@ -12,7 +12,7 @@ interface Service {
     @GET("/search/users?q=location:Fullerton")
     fun getItems(): Call<ItemResponse>
 
-    @GET("/users/{login}/followers")
-    fun getFollowers(@Path("login") login: String): Call<List<Item>>
-
+    @GET("/users/GabeMags/followers")
+    fun getFollowers(): Call<List<Item>>
+/*@Path("login") login: String*/
 }
